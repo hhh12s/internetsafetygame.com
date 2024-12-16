@@ -1,0 +1,236 @@
+<!DOCTYPE html>
+<html lang="ru">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Викторина по безопасности в интернете</title>
+    <style>
+        body {
+            font-family: Arial, sans-serif;
+            background: linear-gradient(135deg, #00c6ff, #0072ff);
+            color: white;
+            margin: 0;
+            padding: 0;
+            display: flex;
+            flex-direction: column;
+            align-items: center;
+            justify-content: center;
+            height: 100vh;
+        }
+        header {
+            text-align: center;
+            margin-bottom: 20px;
+        }
+        header h1 {
+            font-size: 2.5em;
+            margin: 0;
+        }
+        header p {
+            font-size: 1.2em;
+        }
+        .quiz-container {
+            background: rgba(255, 255, 255, 0.1);
+            padding: 20px;
+            border-radius: 10px;
+            box-shadow: 0 4px 15px rgba(0, 0, 0, 0.2);
+            max-width: 600px;
+            width: 90%;
+        }
+        .question {
+            font-size: 1.5em;
+            margin-bottom: 15px;
+        }
+        .answers {
+            list-style: none;
+            padding: 0;
+        }
+        .answers li {
+            margin: 10px 0;
+        }
+        .answers button {
+            width: 100%;
+            padding: 10px;
+            font-size: 1em;
+            color: #0072ff;
+            background: white;
+            border: none;
+            border-radius: 5px;
+            cursor: pointer;
+            transition: background 0.3s;
+        }
+        .answers button:hover {
+            background: #e0e0e0;
+        }
+        .result {
+            font-size: 1.2em;
+            margin-top: 20px;
+        }
+    </style>
+</head>
+<body>
+    <header>
+        <h1>Викторина по безопасности в интернете</h1>
+        <p>Проверьте свои знания о защите в сети!</p>
+    </header>
+    <div class="quiz-container">
+        <div id="quiz">
+            <div id="question-container">
+                <div class="question">Здесь будет вопрос</div>
+                <ul class="answers">
+                    <li><button data-index="0">Ответ 1</button></li>
+                    <li><button data-index="1">Ответ 2</button></li>
+                    <li><button data-index="2">Ответ 3</button></li>
+                    <li><button data-index="3">Ответ 4</button></li>
+                </ul>
+            </div>
+            <div class="result" id="result" style="display: none;">
+                Вы набрали <span id="score">0</span> из <span id="total">0</span>!
+            </div>
+        </div>
+    </div>
+
+    <script>
+        const questions = [
+            {
+                question: "Что делать, если вы получили подозрительное письмо?",
+                answers: [
+                    "Открыть его для проверки",
+                    "Удалить сразу",
+                    "Ответить отправителю",
+                    "Переслать другу"
+                ],
+                correct: 1
+            },
+            {
+                question: "Что такое надежный пароль?",
+                answers: [
+                    "123456",
+                    "password",
+                    "Ваша дата рождения",
+                    "Смешение букв, цифр и символов"
+                ],
+                correct: 3
+            },
+            {
+                question: "Что такое фишинг?",
+                answers: [
+                    "Вид кибератаки",
+                    "Онлайн-игра",
+                    "Симуляция рыбалки",
+                    "Способ защиты аккаунтов"
+                ],
+                correct: 0
+            },
+            {
+                question: "Что нужно сделать перед тем, как нажать на ссылку в письме?",
+                answers: [
+                    "Проверить, от надежного ли источника",
+                    "Нажать сразу",
+                    "Игнорировать",
+                    "Переслать кому-нибудь"
+                ],
+                correct: 0
+            },
+            {
+                question: "Что такое двухфакторная аутентификация?",
+                answers: [
+                    "Одноэтапная проверка",
+                    "Двухэтапная проверка",
+                    "Тип мошенничества",
+                    "Автоматический вход"
+                ],
+                correct: 1
+            },
+            {
+                question: "Как понять, что сайт безопасен?",
+                answers: [
+                    "Есть значок замка в адресной строке",
+                    "Выглядит профессионально",
+                    "Загружается быстро",
+                    "Много картинок"
+                ],
+                correct: 0
+            },
+            {
+                question: "Что нельзя публиковать в интернете?",
+                answers: [
+                    "Любимую еду",
+                    "Личные данные, такие как адрес и номер телефона",
+                    "Хобби",
+                    "Фотографии с отпуска"
+                ],
+                correct: 1
+            },
+            {
+                question: "Что такое вредоносное ПО?",
+                answers: [
+                    "Программа, созданная для нанесения вреда",
+                    "Антивирус",
+                    "Игра",
+                    "Тип письма"
+                ],
+                correct: 0
+            },
+            {
+                question: "Что делать, если ваш аккаунт взломали?",
+                answers: [
+                    "Сменить пароль и сообщить о проблеме",
+                    "Игнорировать",
+                    "Удалить аккаунт",
+                    "Рассказывать об этом в соцсетях"
+                ],
+                correct: 0
+            },
+            {
+                question: "Как безопасно подключиться к публичному Wi-Fi?",
+                answers: [
+                    "Использовать VPN",
+                    "Подключаться без защиты",
+                    "Не использовать вовсе",
+                    "Делиться подключением с другими"
+                ],
+                correct: 0
+            }
+        ];
+
+        let currentQuestion = 0;
+        let score = 0;
+
+        function loadQuestion() {
+            const questionElement = document.querySelector(".question");
+            const answerButtons = document.querySelectorAll(".answers button");
+
+            const current = questions[currentQuestion];
+            questionElement.textContent = current.question;
+
+            answerButtons.forEach((button, index) => {
+                button.textContent = current.answers[index];
+                button.onclick = () => checkAnswer(index);
+            });
+        }
+
+        function checkAnswer(index) {
+            if (index === questions[currentQuestion].correct) {
+                score++;
+            }
+            currentQuestion++;
+
+            if (currentQuestion < questions.length) {
+                loadQuestion();
+            } else {
+                showResult();
+            }
+        }
+
+        function showResult() {
+            document.getElementById("quiz").style.display = "none";
+            const resultElement = document.getElementById("result");
+            resultElement.style.display = "block";
+            document.getElementById("score").textContent = score;
+            document.getElementById("total").textContent = questions.length;
+        }
+
+        loadQuestion();
+    </script>
+</body>
+</html>
